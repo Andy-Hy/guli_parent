@@ -2,14 +2,11 @@ package com.guy.eduservice.controller;
 
 
 import com.guy.commonutils.R;
+import com.guy.eduservice.entity.EduChapter;
 import com.guy.eduservice.entity.chapter.ChapterVo;
 import com.guy.eduservice.service.EduChapterService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +20,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/eduservice/chapter")
+@CrossOrigin
 public class EduChapterController {
 
     @Autowired
@@ -33,6 +31,39 @@ public class EduChapterController {
     public R getChapterVideo(@PathVariable String courseId) {
         List<ChapterVo> list = chapterService.getChapterVideoByCourseId(courseId);
         return R.ok().data("allChapterVideo",list);
+    }
+
+    //添加章节
+    @PostMapping("addChapter")
+    public R addChapter(@RequestBody EduChapter eduChapter) {
+        chapterService.save(eduChapter);
+        return R.ok();
+    }
+
+    //根据章节id查询
+    @GetMapping("getChapterInfo")
+    public R getChapterInfo(@PathVariable String chapterId) {
+        EduChapter eduChapter = chapterService.getById(chapterId);
+        return R.ok().data("chapter",eduChapter);
+    }
+
+    //修改章节
+    @GetMapping("updateChapter")
+    public R updateChapter(@PathVariable EduChapter eduChapter) {
+        chapterService.updateById(eduChapter);
+        return R.ok();
+    }
+
+    //删除的方法
+    @DeleteMapping("{chapterId}")
+    public R deleteChapter(@PathVariable String chapterId) {
+        boolean flag = chapterService.deleteChapter(chapterId);
+        if(flag) {
+            return R.ok();
+        } else {
+            return R.error();
+        }
+
     }
 
 }
